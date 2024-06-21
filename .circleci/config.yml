@@ -33,11 +33,15 @@ jobs:
       - run:
           name: Run Playwright tests on Chrome
           command: npx playwright test --project=chromium
+      - run:
+          name: Generate Allure Report
+          command: |
+            npx allure generate test-results --clean -o allure-report
       - store_artifacts:
-          path: test-results
-          destination: test-results
+          path: allure-report
+          destination: allure-report
       - store_test_results:
-          path: test-results
+          path: allure-report
 
 workflows:
   version: 2

@@ -58,7 +58,7 @@ module.exports = defineConfig({
     ],
     reporter: [
         ['list'], // Display results in the console
-        ['junit', { outputFile: 'test-results/results.xml' }], // Generate JUnit XML report
+        ['allure-playwright'],
     ],
 });
 
