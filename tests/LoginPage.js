@@ -1,5 +1,5 @@
 const {expect} = require('@playwright/test');
-const config = require('./secure_data.spec');
+const config = require('./secure_data');
 
 exports.LoginPage = class LoginPage{
 
