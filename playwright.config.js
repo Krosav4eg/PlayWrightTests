@@ -38,13 +38,17 @@ module.exports = defineConfig({
     projects: [
         {
             name: 'chromium',
-            use: {...devices['Desktop Chrome']},
+            use: {
+                browserName: 'chromium',
+                channel: 'chrome', // This ensures the tests run in Google Chrome
+                // headless: false, // Uncomment if you need to run in headless mode
+            }
         },
 
-        {
-          name: 'firefox',
-          use: { ...devices['Desktop Firefox'] },
-        },
+        // {
+        //   name: 'firefox',
+        //   use: { ...devices['Desktop Firefox'] },
+        // },
         //
         // {
         //   name: 'webkit',

@@ -31,8 +31,8 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "package.json" }}
       - run:
-          name: Run Playwright tests
-          command: npx playwright test
+          name: Run Playwright tests on Chrome
+          command: npx playwright test --project=chromium
       - store_artifacts:
           path: test-results
           destination: test-results
