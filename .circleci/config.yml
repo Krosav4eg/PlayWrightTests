@@ -67,6 +67,10 @@ jobs:
   automation-tests-run:
     working_directory: ~/repo
     executor: node-executor
+    parameters:
+      NightlyRunNotify:
+        type: boolean
+        default: false
     parallelism: 3
     steps:
       - restore-and-save-cache
