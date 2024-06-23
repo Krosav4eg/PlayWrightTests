@@ -55,6 +55,3 @@ workflows:
 
   on-demand:
     when: << pipeline.parameters.ApiTrigger >>
-    jobs:
-      - install-deps
-      - run-playwright-tests
