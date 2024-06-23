@@ -83,6 +83,7 @@ workflows:
             branches:
                only:
                 - master
+          notifyToSlack: true
 
   schedule-workflow:
     triggers:
@@ -93,9 +94,11 @@ workflows:
               only:
                 - master
     jobs:
-      - automation-tests-run
+      - automation-tests-run:
+           notifyToSlack: true
 
   on-demand:
     when: << pipeline.parameters.ApiTrigger >>
     jobs:
-      - automation-tests-run
+      - automation-tests-run:
+          notifyToSlack: true
