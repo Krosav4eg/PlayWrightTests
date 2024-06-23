@@ -17,10 +17,12 @@ module.exports = defineConfig({
     /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
     use: {
         /* Base URL to use in actions like `await page.goto('/')`. */
-        baseURL: 'https://jamesroberts-trial.interactgo.com/',
-        video: 'on-first-retry',
+        // baseURL: 'https://jamesroberts-trial.interactgo.com/',
+        video: 'retain-on-failure',
+        screenshot: 'only-on-failure',
         /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
         trace: 'on-first-retry',
+        ignoreHTTPSErrors: true,
     },
     // Emulates the user locale.
     locale: 'en-GB',
@@ -33,23 +35,21 @@ module.exports = defineConfig({
     /* Configure projects for major browsers */
     projects: [
         {
-            name: 'chromium',
+            name: 'chrome',
             use: {
-                browserName: 'chromium',
+                browserName: 'chrome',
                 channel: 'chrome', // This ensures the tests run in Google Chrome
                 // headless: false, // Uncomment if you need to run in headless mode
+                launchOptions: {
+                    args: ['--start-maximized']
+                }
             }
         },
 
-        // {
-        //   name: 'firefox',
-        //   use: { ...devices['Desktop Firefox'] },
-        // },
-        //
-        // {
-        //     name: 'webkit',
-        //     use: {...devices['Desktop Safari']},
-        // },
+        {
+          name: 'firefox',
+          use: { ...devices['Desktop Firefox'] },
+        },
     ],
     reporter: [
         ['list'], // Display results in the console
