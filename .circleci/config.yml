@@ -57,4 +57,4 @@ workflows:
     when: << pipeline.parameters.ApiTrigger >>
     jobs:
       - install-deps
-      - run-playwright-tests:
+      - run-playwright-tests
