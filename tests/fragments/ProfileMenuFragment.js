@@ -14,6 +14,7 @@ exports.ProfileMenuFragment = class ProfileMenuFragment {
         const EXPECTED_DATA = [
             '/blog/post/create/347'
         ];
+        await this.addBlogPostOption.waitFor({state: 'visible'});
         await this.addBlogPostOption.click();
         await this.page.waitForLoadState('load');
         const homeUrl = this.page.url();
