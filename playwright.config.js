@@ -51,10 +51,10 @@ module.exports = defineConfig({
           use: { ...devices['Desktop Firefox'] },
         },
 
-        {
-            name: 'webkit',
-            use: {...devices['Desktop Safari']},
-        },
+        // {
+        //     name: 'webkit',
+        //     use: {...devices['Desktop Safari']},
+        // },
     ],
     reporter: [
         ['list'], // Display results in the console

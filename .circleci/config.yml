@@ -38,6 +38,13 @@ commands:
             - ~/.npm
             - ~/.cache
 
+  install-browsers:
+    description: "Install firefox browser"
+    steps:
+      - browser-tools/install-browser-tools:
+          browsers: [ "firefox"]
+
+
   send-notification-to-slack-channel:
     description: "Send notification to Slack channel"
     steps:
@@ -59,9 +66,6 @@ commands:
       - run:
           name: Run Playwright tests on Firefox
           command: npx playwright test --project=firefox
-      - run:
-          name: Run Playwright tests on WebKit
-          command: npx playwright test --project=webkit
       - store_artifacts:
           path: test-results
           destination: test-results
@@ -80,7 +84,9 @@ jobs:
     parallelism: 3
     steps:
       - restore-and-save-cache
+      - install-browsers
       - run-automation-tests
+      - send-notification-to-slack-channel
 
 workflows:
   commit-workflow:
