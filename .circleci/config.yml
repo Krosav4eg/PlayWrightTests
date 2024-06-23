@@ -30,6 +30,7 @@ commands:
             - v2-deps-{{ .Branch }}-{{ checksum "package-lock.json" }}
             - v2-deps-{{ .Branch }}-
             - v2-deps-
+      - run: npm install --save-dev
       - run: npx playwright install
       - save_cache:
           key: v2-deps-{{ .Branch }}-{{ checksum "package-lock.json" }}
