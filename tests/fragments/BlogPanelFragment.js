@@ -29,6 +29,6 @@ exports.BlogPannelFragment = class BlogPanelFragment {
 
         await this.saveButton.click();
         // const postUrl = this.page.url();
-        // expect(postUrl).toContain('https://jamesroberts-trial.interactgo.com/blog/');
+        // expect(postUrl).toBe('https://jamesroberts-trial.interactgo.com/blog/');
     }
 }

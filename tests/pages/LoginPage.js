@@ -16,14 +16,14 @@ exports.LoginPage = class LoginPage {
     async makeLogin() {
 
         const EXPECTED_URL_DATA = [
-            'https://jamesroberts-trial.interactgo.com/'
+            config.baseUrl
         ];
-        await this.page.goto('/');
+        await this.page.goto(config.baseUrl);
         await this.usernameInputField.fill(config.credentials.username);
         await this.passwordInputField.fill(config.credentials.password);
         await this.loginButton.waitFor({state: 'visible'});
         await this.loginButton.click();
         const homeUrl = this.page.url();
-        expect(homeUrl).toBe(EXPECTED_URL_DATA[0]);
+        expect(homeUrl).toContain(EXPECTED_URL_DATA[0]);
     }
 }

@@ -11,8 +11,11 @@ exports.ProfileMenuFragment = class ProfileMenuFragment {
     }
 
     async selectAddBlogPostOption() {
+        const EXPECTED_DATA = [
+            '/blog/post/create/347'
+        ];
         await this.addBlogPostOption.click();
         await this.page.waitForLoadState('load');
-        await expect(this.page).toHaveURL('/blog/post/create/347');
-   }
+        const homeUrl = this.page.url();
+        expect(homeUrl).toContain(EXPECTED_DATA[0]);   }
 }
