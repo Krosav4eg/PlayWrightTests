@@ -1,16 +1,11 @@
 version: 2.1
 orbs:
   slack: circleci/slack@3.4.2
-  browser-tools: circleci/browser-tools@1.4.1
 
 parameters:
   ApiTrigger:
     type: boolean
     default: false
-  notifyToSlack:
-    type: boolean
-    default: true
-
 
 executors:
   node-executor:
@@ -43,23 +38,8 @@ commands:
     steps:
       - browser-tools/install-geckodriver
       - browser-tools/install-firefox
-      - browser-tools/install-chromedriver
-      - browser-tools/install-chrome
 
 
-  send-notification-to-slack-channel:
-    description: "Send notification to Slack channel"
-    steps:
-      - when:
-          condition: << pipeline.parameters.notifyToSlack >>
-          steps:
-            - slack/status:
-                channel: C041TRUTE4V
-                fail_only: false
-                only_for_branches:
-                  -master
-                  -ci_configuration
-                webhook: $SLACK_WEBHOOK
 
   run-automation-tests:
     description: "Run automation tests"
@@ -90,13 +70,10 @@ jobs:
       - restore-and-save-cache
       - install-browsers
       - run-automation-tests
-      - send-notification-to-slack-channel
+
 
 workflows:
   commit-workflow:
-    when:
-      and:
-        - equal: [ true, << pipeline.parameters.notifyToSlack >>]
     jobs:
       - automation-tests-run:
           filters:
@@ -108,7 +85,7 @@ workflows:
   schedule-workflow:
     triggers:
       - schedule:
-          cron: "0 5 * * 2,4"
+          cron: "0 6 * * 2,4"
           filters:
             branches:
               only:
