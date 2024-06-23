@@ -51,7 +51,7 @@ jobs:
     executor: node-executor
     steps:
       - slack/notify:
-          event: success
+          event: fail
           channel: C041TRUTE4V
           webhook: $SLACK_WEBHOOK_URL
 
