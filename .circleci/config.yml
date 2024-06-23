@@ -53,10 +53,11 @@ jobs:
   slack-notify:
     executor: node-executor
     steps:
-      - slack/notify:
-          event: fail
+      - slack/status:
           channel: C041TRUTE4V
-          webhook: $SLACK_WEBHOOK_URL
+          fail_only: false
+          only_for_branches: master
+          webhook: $SLACK_WEBHOOK
 
 workflows:
   version: 2
