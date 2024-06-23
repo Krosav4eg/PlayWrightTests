@@ -98,11 +98,12 @@ workflows:
               only:
                 - master
     jobs:
-      - automation-tests-run:
-           notifyToSlack: true
+      - automation-tests-run
+
 
   on-demand:
     when: << pipeline.parameters.ApiTrigger >>
     jobs:
-      - automation-tests-run:
-          notifyToSlack: true
+      - build_approval:
+            type: approval
+      - automation-tests-run
