@@ -41,8 +41,8 @@ commands:
   install-browsers:
     description: "Install firefox browser"
     steps:
-      - browser-tools/install-browser-tools:
-          browser: [ "firefox"]
+      - browser-tools/install-geckodriver
+      - browser-tools/install-firefox
 
 
   send-notification-to-slack-channel:
