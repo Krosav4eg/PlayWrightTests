@@ -1,10 +1,5 @@
 // @ts-check
 const {defineConfig, devices} = require('@playwright/test');
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// require('dotenv').config({ path: path.resolve(__dirname, '.env') });
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -16,7 +11,7 @@ module.exports = defineConfig({
     fullyParallel: true,
     timeout: 40000,
     /* Opt out of parallel tests on CI. */
-    workers: process.env.CI ? 3 : undefined,
+    workers: process.env.CI ? 1 : undefined,
     // /* Reporter to use. See https://playwright.dev/docs/test-reporters */
     // reporter: 'html',
     /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */

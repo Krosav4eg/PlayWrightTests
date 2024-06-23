@@ -1,15 +1,10 @@
 version: 2.1
 
-parameters:
-  ApiTrigger:
-    type: boolean
-    default: false
-
 executors:
   node-executor:
     docker:
       - image: circleci/node:16-browsers
-    working_directory: ~/PlayWrightAutomationProject
+    working_directory: ~/repo
 
 jobs:
   install-deps:
@@ -52,11 +47,3 @@ workflows:
       - run-playwright-tests:
           requires:
             - install-deps
-
-on-demand:
-  when: << pipeline.parameters.ApiTrigger >>
-  jobs:
-    - install-deps
-    - run-playwright-tests:
-        requires:
-          - install-deps
