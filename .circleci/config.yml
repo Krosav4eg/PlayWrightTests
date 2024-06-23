@@ -42,7 +42,7 @@ commands:
     description: "Install firefox browser"
     steps:
       - browser-tools/install-browser-tools:
-          browsers: [ "firefox"]
+          browser: [ "firefox"]
 
 
   send-notification-to-slack-channel:
