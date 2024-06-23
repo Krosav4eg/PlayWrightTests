@@ -56,6 +56,12 @@ commands:
       - run:
           name: Run automation tests
           command: npx playwright test --project=chromium
+      - run:
+          name: Run Playwright tests on Firefox
+          command: npx playwright test --project=firefox
+      - run:
+          name: Run Playwright tests on WebKit
+          command: npx playwright test --project=webkit
       - store_artifacts:
           path: test-results
           destination: test-results
@@ -80,7 +86,7 @@ workflows:
   commit-workflow:
     when:
       and:
-        - equal: [ false, << pipeline.parameters.ApiTrigger >>]
+        - equal: [ true, << pipeline.parameters.notifyToSlack >>]
     jobs:
       - automation-tests-run:
           filters:
