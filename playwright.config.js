@@ -19,6 +19,7 @@ module.exports = defineConfig({
         /* Base URL to use in actions like `await page.goto('/')`. */
         // baseURL: 'https://jamesroberts-trial.interactgo.com/',
         video: 'retain-on-failure',
+        screenshot: 'only-on-failure',
         /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
         trace: 'on-first-retry',
         ignoreHTTPSErrors: true,

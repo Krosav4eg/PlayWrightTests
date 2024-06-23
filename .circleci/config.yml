@@ -1,61 +1,94 @@
 version: 2.1
+orbs:
+  slack: circleci/slack@3.4.2
+  browser-tools: circleci/browser-tools@1.4.1
 
 parameters:
   ApiTrigger:
     type: boolean
     default: false
+  notifyToSlack:
+    type: boolean
+    default: true
+
 
 executors:
   node-executor:
+    environment:
+      TERM: xterm
     docker:
       - image: circleci/node:16-browsers
-    working_directory: ~/repo
 
-jobs:
-  install-deps:
-    executor: node-executor
+commands:
+
+  restore-and-save-cache:
+    description: "Restore and save cache"
     steps:
       - checkout
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            - v1-dependencies-
-      - run:
-          name: Install dependencies
-          command: npm install
+            - v2-deps-{{ .Branch }}-{{ checksum "package-lock.json" }}
+            - v2-deps-{{ .Branch }}-
+            - v2-deps-
+      - run: npm ci
       - save_cache:
+          key: v2-deps-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+            - ~/.npm
+            - ~/.cache
 
-  run-playwright-tests:
+  send-notification-to-slack-channel:
+    description: "Send notification to Slack channel"
+    steps:
+      - when:
+          condition: << pipeline.parameters.notifyToSlack >>
+          steps:
+            - slack/status:
+                channel: C041TRUTE4V
+                fail_only: false
+                only_for_branches: master
+                webhook: $SLACK_WEBHOOK
+
+  run-automation-tests:
+    description: "Run automation tests"
+    steps:
+      - run:
+          name: Run automation tests
+          command: npx playwright test --project=chromium
+
+jobs:
+  automation-tests-run:
+    working_directory: ~/repo
     executor: node-executor
     parallelism: 3
     steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-      - run:
-          name: Run Playwright tests on Chrome
-          command: npx playwright test --project=chromium
-      - store_artifacts:
-          path: test-results
-          destination: test-results
-      - store_test_results:
-          path: test-results
+      - restore-and-save-cache
+      - run-automation-tests
 
 workflows:
-  version: 2
-  test:
+  commit-workflow:
+    when:
+      and:
+        - equal: [ false, << pipeline.parameters.ApiTrigger >>]
     jobs:
-      - install-deps
-      - run-playwright-tests:
-          requires:
-            - install-deps
+      - automation-tests-run:
+          filters:
+            branches:
+               only:
+                - master
+
+  schedule-workflow:
+    triggers:
+      - schedule:
+          cron: "0 5 * * 2,4"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - automation-tests-run
 
   on-demand:
     when: << pipeline.parameters.ApiTrigger >>
     jobs:
-      - install-deps
-      - run-playwright-tests
+      - automation-tests-run
