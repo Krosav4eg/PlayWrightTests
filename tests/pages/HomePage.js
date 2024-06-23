@@ -11,6 +11,7 @@ exports.HomePage = class HomePage {
     }
 
     async navigateToTheProfileMenu() {
+        await this.profileMenuIcon.waitFor({state: 'visible'});
         await this.profileMenuIcon.click();
     }
 }

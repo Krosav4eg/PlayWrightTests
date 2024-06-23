@@ -7,22 +7,26 @@ exports.BlogPannelFragment = class BlogPanelFragment {
      */
     constructor(page) {
         this.page = page;
-        this.saveButton = page.locator('//a[text()="Save"]');
-        this.publishSwitcher = page.locator('(//label[@class="switch"])[2]');//намного лучше юзать при интернационализации
-        this.makeFeaturedPostSwitcher = page.locator('(//label[@class="switch"])[3]');
+        this.saveButton = page.locator('//a[contains(@class,"button is-medium-button")]');
+        this.switcher = page.locator('label.switch');
     }
 
     async setPublishAndMakeFeaturePost() {
-        await this.publishSwitcher.waitFor({ state: 'visible' });
-        await this.publishSwitcher.click();
-        const isPublishSwitcherChecked = await this.publishSwitcher.isChecked();
+        // Select publishSwitcher
+        await this.switcher.nth(1).waitFor({state: 'visible'});
+        await this.switcher.nth(1).click();
+        const isPublishSwitcherChecked = await this.switcher.nth(1).isChecked();
         expect(isPublishSwitcherChecked).toBe(true);
-        await this.saveButton.waitFor({ state: 'visible' });
+
+        await this.saveButton.waitFor({state: 'visible'});
         await this.saveButton.hover();
-        await this.makeFeaturedPostSwitcher.waitFor({ state: 'visible' });
-        await this.makeFeaturedPostSwitcher.click();
-        const isMakeFeaturedPostSwitcher = await this.makeFeaturedPostSwitcher.isChecked();
+
+        // Select makeFeaturedPostSwitcher
+        await this.switcher.nth(2).waitFor({state: 'visible'});
+        await this.switcher.nth(2).click();
+        const isMakeFeaturedPostSwitcher = await this.switcher.nth(2).isChecked();
         expect(isMakeFeaturedPostSwitcher).toBe(true);
+
         await this.saveButton.click();
         // const postUrl = this.page.url();
         // expect(postUrl).toContain('https://jamesroberts-trial.interactgo.com/blog/');

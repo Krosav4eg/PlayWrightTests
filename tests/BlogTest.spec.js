@@ -20,13 +20,13 @@ test.describe('Blog post feature', () => {
         const loginPage = new LoginPage(page);
         await loginPage.makeLogin();
     });
+
     postingBlogTestCases.forEach(({title, filePath}) => {
         test(`Add blog post test - ${title}`, async ({page}) => {
             const homePage = new HomePage(page);
             const postCreatePage = new PostCreatePage(page);
             const profileMenuFragment = new ProfileMenuFragment(page);
             const blogPanelFragment = new BlogPannelFragment(page);
-
             await homePage.navigateToTheProfileMenu();
             await profileMenuFragment.selectAddBlogPostOption();
             await postCreatePage.fillInBlogPostForm(filePath);

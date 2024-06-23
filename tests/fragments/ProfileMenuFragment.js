@@ -13,7 +13,6 @@ exports.ProfileMenuFragment = class ProfileMenuFragment {
     async selectAddBlogPostOption() {
         await this.addBlogPostOption.click();
         await this.page.waitForLoadState('load');
-        // await expect( this.page.title()).toBe('Interact Blog - Interact');
         await expect(this.page).toHaveURL('/blog/post/create/347');
    }
 }
