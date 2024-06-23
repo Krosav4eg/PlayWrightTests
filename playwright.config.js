@@ -43,22 +43,35 @@ module.exports = defineConfig({
                 browserName: 'chromium',
                 channel: 'chrome', // This ensures the tests run in Google Chrome
                 // headless: false, // Uncomment if you need to run in headless mode
+                launchOptions: {
+                    args: [
+                        '--allow-running-insecure-content',
+                        '--disable-web-security',
+                        '--disable-notifications',
+                        '--disable-gpu',
+                        '--disable-setuid-sandbox',
+                        '--deterministic-fetch',
+                        '--disable-features=IsolateOrigins,site-per-process',
+                        '--disable-site-isolation-trials',
+                        '--disable-web-security',
+                    ],
+                },
             }
         },
 
-        // {
-        //   name: 'firefox',
-        //   use: { ...devices['Desktop Firefox'] },
-        // },
-        //
-        // {
-        //   name: 'webkit',
-        //   use: { ...devices['Desktop Safari'] },
-        // },
+        {
+          name: 'firefox',
+          use: { ...devices['Desktop Firefox'] },
+        },
+
+        {
+            name: 'webkit',
+            use: {...devices['Desktop Safari']},
+        },
     ],
     reporter: [
         ['list'], // Display results in the console
+        ['html'],
         ['junit', { outputFile: 'test-results/results.xml' }], // Generate JUnit XML report
     ],
 });
-

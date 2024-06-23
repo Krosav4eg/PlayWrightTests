@@ -1,10 +1,18 @@
 version: 2.1
 
+orbs:
+  slack: circleci/slack@4.4.2
+
+parameters:
+  ApiTrigger:
+    type: boolean
+    default: false
+
 executors:
   node-executor:
     docker:
       - image: circleci/node:16-browsers
-    working_directory: ~/repo
+    working_directory: ~/PlayWrightAutomationProject
 
 jobs:
   install-deps:
@@ -39,6 +47,14 @@ jobs:
       - store_test_results:
           path: test-results
 
+  slack-notify:
+    executor: node-executor
+    steps:
+      - slack/notify:
+          event: success
+          channel: C041TRUTE4V
+          webhook: $SLACK_WEBHOOK_URL
+
 workflows:
   version: 2
   test:
@@ -47,3 +63,17 @@ workflows:
       - run-playwright-tests:
           requires:
             - install-deps
+      - slack-notify:
+          requires:
+            - run-playwright-tests
+
+  on-demand:
+    when: << pipeline.parameters.ApiTrigger >>
+    jobs:
+      - install-deps
+      - run-playwright-tests:
+          requires:
+            - install-deps
+      - slack-notify:
+          requires:
+            - run-playwright-tests
