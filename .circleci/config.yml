@@ -7,6 +7,9 @@ parameters:
   ApiTrigger:
     type: boolean
     default: false
+  notifyToSlack:
+    type: boolean
+    default: true
 
 executors:
   node-executor:
