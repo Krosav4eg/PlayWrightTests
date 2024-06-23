@@ -35,9 +35,9 @@ module.exports = defineConfig({
     /* Configure projects for major browsers */
     projects: [
         {
-            name: 'chrome',
+            name: 'chromium',
             use: {
-                browserName: 'chrome',
+                browserName: 'chromium',
                 channel: 'chrome', // This ensures the tests run in Google Chrome
                 // headless: false, // Uncomment if you need to run in headless mode
                 launchOptions: {
