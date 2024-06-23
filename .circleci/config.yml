@@ -1,5 +1,10 @@
 version: 2.1
 
+parameters:
+  ApiTrigger:
+    type: boolean
+    default: false
+
 executors:
   node-executor:
     docker:
@@ -42,6 +47,14 @@ jobs:
 workflows:
   version: 2
   test:
+    jobs:
+      - install-deps
+      - run-playwright-tests:
+          requires:
+            - install-deps
+
+  on-demand:
+    when: << pipeline.parameters.ApiTrigger >>
     jobs:
       - install-deps
       - run-playwright-tests:
