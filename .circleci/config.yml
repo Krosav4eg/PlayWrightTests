@@ -40,7 +40,6 @@ commands:
       - browser-tools/install-firefox
 
 
-
   run-automation-tests:
     description: "Run automation tests"
     steps:
