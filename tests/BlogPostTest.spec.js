@@ -1,11 +1,11 @@
 import {test} from '@playwright/test';
 
-const {LoginPage} = require('./pages/LoginPage');
-const {HomePage} = require('./pages/HomePage');
-import {PostCreatePage} from "./pages/PostCreatePage";
-import {BlogPannelFragment} from "./fragments/BlogPanelFragment";
+const {LoginPage} = require('../pageobject/pages/LoginPage');
+const {HomePage} = require('../pageobject/pages/HomePage');
+import {PostCreatePage} from "../pageobject/pages/PostCreatePage";
+import {BlogPannelFragment} from "../pageobject/fragments/BlogPanelFragment";
 
-const {ProfileMenuFragment} = require('./fragments/ProfileMenuFragment');
+const {ProfileMenuFragment} = require('../pageobject/fragments/ProfileMenuFragment');
 
 import path from "path";
 
@@ -27,6 +27,7 @@ test.describe('Blog post feature', () => {
             const postCreatePage = new PostCreatePage(page);
             const profileMenuFragment = new ProfileMenuFragment(page);
             const blogPanelFragment = new BlogPannelFragment(page);
+
             await homePage.navigateToTheProfileMenu();
             await profileMenuFragment.selectAddBlogPostOption();
             await postCreatePage.fillInBlogPostForm(filePath);

@@ -1,5 +1,4 @@
 const {expect} = require('@playwright/test');
-// const path = require('path');
 
 exports.PostCreatePage = class PostCreatePage {
 
@@ -30,7 +29,6 @@ exports.PostCreatePage = class PostCreatePage {
             'Test blog content',
         ];
 
-        // const filePath = path.resolve(__dirname, 'test_image.png');
         await this.fileInputButton.setInputFiles(file);
         const attributeValue = await this.backgroundImage.getAttribute('src');
         expect(attributeValue).not.toContain(EXPECTED_URLS_DATA[0]);
