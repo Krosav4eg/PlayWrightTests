@@ -28,7 +28,5 @@ exports.BlogPannelFragment = class BlogPanelFragment {
         expect(isMakeFeaturedPostSwitcher).toBe(true);
 
         await this.saveButton.click();
-        // const postUrl = this.page.url();
-        // expect(postUrl).toBe('https://jamesroberts-trial.interactgo.com/blog/');
     }
 }
