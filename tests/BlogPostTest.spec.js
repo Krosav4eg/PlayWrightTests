@@ -10,9 +10,9 @@ const {ProfileMenuFragment} = require('../pageobject/fragments/ProfileMenuFragme
 import path from "path";
 
 const postingBlogTestCases = [
-    {title: 'Check png image uploading', filePath: path.resolve(__dirname, 'test_image.png')},
-    {title: 'Check jpg image uploading', filePath: path.resolve(__dirname, 'test_image.jpg')},
-    {title: 'Check gif image uploading', filePath: path.resolve(__dirname, 'test_image.gif')},
+    {title: 'Check png image uploading', filePath: path.resolve(__dirname, 'test_pictures/test_image.png')},
+    {title: 'Check jpg image uploading', filePath: path.resolve(__dirname, 'test_pictures/test_image.jpg')},
+    {title: 'Check gif image uploading', filePath: path.resolve(__dirname, 'test_pictures/test_image.gif')},
 ];
 
 test.describe('Blog post feature', () => {
