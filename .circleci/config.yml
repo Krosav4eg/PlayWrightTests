@@ -35,23 +35,13 @@ commands:
     description: "Run automation tests"
     steps:
       - run:
-          name: Run automation tests on Chromium
-          command: npx playwright test --project=chromium
+          name: Run all automation tests on Chromium and Firefox
+          command: npx playwright test
 
       # Сохраняем HTML-отчёт
       - store_artifacts:
           path: playwright-report
           destination: playwright-report
-
-      - run:
-          name: Run automation tests on Firefox
-          command: npx playwright test --project=firefox
-
-      # Сохраняем HTML-отчёт
-      - store_artifacts:
-          path: playwright-report
-          destination: playwright-report
-
 
 jobs:
   automation-tests-run:
