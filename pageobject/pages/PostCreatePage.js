@@ -1,6 +1,6 @@
-const {expect} = require('@playwright/test');
+import { test, expect, chromium } from '@playwright/test';
 
-exports.PostCreatePage = class PostCreatePage {
+export class PostCreatePage {
 
     /**
      * @param {import('@playwright/test').Page} page

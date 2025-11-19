@@ -1,7 +1,6 @@
-const { defineConfig, devices } = require('@playwright/test');
-const globalTeardown = require('./global-teardown.js');
+import { defineConfig, devices } from '@playwright/test';
 
-module.exports = defineConfig({
+export default defineConfig({
     testDir: './tests',
     outputDir: 'test-results/',
     fullyParallel: true,
@@ -27,12 +26,12 @@ module.exports = defineConfig({
             use: { ...devices['Desktop Firefox'] },
         },
     ],
-
     reporter: [
         ['list'],
         ['html'],
         ['junit', { outputFile: 'test-results/results.xml' }],
     ],
 
-    globalTeardown: globalTeardown,
+    // ✅ путь к файлу, а не импорт функции
+    globalTeardown: './global-teardown.js',
 });

@@ -1,7 +1,6 @@
-const {expect} = require('@playwright/test');
+import { expect } from '@playwright/test';
 
-exports.ProfileMenuFragment = class ProfileMenuFragment {
-
+export class ProfileMenuFragment {
     /**
      * @param {import('@playwright/test').Page} page
      */
@@ -11,12 +10,11 @@ exports.ProfileMenuFragment = class ProfileMenuFragment {
     }
 
     async selectAddBlogPostOption() {
-        const EXPECTED_DATA = [
-            '/blog/post/create/347'
-        ];
-        await this.addBlogPostOption.waitFor({state: 'visible'});
+        const EXPECTED_DATA = ['/blog/post/create/347'];
+        await this.addBlogPostOption.waitFor({ state: 'visible' });
         await this.addBlogPostOption.click();
         await this.page.waitForLoadState('load');
         const homeUrl = this.page.url();
-        expect(homeUrl).toContain(EXPECTED_DATA[0]);   }
+        expect(homeUrl).toContain(EXPECTED_DATA[0]);
+    }
 }

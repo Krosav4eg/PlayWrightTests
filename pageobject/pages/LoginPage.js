@@ -1,7 +1,7 @@
-const {expect} = require('@playwright/test');
-const config = require('../../tests/secure_data');
+import { test, expect, chromium } from '@playwright/test';
+import config from '../../tests/secure_data.js';
 
-exports.LoginPage = class LoginPage {
+export class LoginPage {
 
     /**
      * @param {import('@playwright/test').Page} page
