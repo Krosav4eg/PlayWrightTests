@@ -44,11 +44,6 @@ commands:
           destination: test-results
       - store_test_results:
           path: test-results
-      # Формируем рабочую ссылку на HTML-отчёт
-      - run:
-          name: Set HTML report URL
-          command: |
-            echo "export HTML_REPORT_URL=https://output.circle-artifacts.com/output/$CIRCLE_WORKFLOW_JOB_ID/artifacts/0/playwright-report/index.html" >> $BASH_ENV
 
 jobs:
   automation-tests-run:
