@@ -61,6 +61,9 @@ jobs:
       # Запуск тестов
       - run-automation-tests
 
+  build-approval:
+    type: approval
+
 workflows:
   commit-workflow:
     jobs:
@@ -82,8 +85,6 @@ workflows:
       - automation-tests-run
 
   on-demand:
-    when: << pipeline.parameters.ApiTrigger >>
     jobs:
-      - build_approval:
-          type: approval
+      - build-approval
       - automation-tests-run
