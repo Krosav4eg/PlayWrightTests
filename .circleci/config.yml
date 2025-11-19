@@ -1,6 +1,4 @@
 version: 2.1
-orbs:
-  browser-tools: circleci/browser-tools@1.4.1
 
 parameters:
   ApiTrigger:
@@ -12,7 +10,7 @@ executors:
     environment:
       TERM: xterm
     docker:
-      - image: mcr.microsoft.com/playwright:v1.46.0-focal
+      - image: mcr.microsoft.com/playwright:v1.46.0-focal  # Playwright image с предустановленными браузерами
 
 commands:
 
@@ -26,34 +24,26 @@ commands:
             - v2-deps-{{ .Branch }}-
             - v2-deps-
       - run: npm install --save-dev
-      - run: npx playwright install
       - save_cache:
           key: v2-deps-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
             - ~/.npm
             - ~/.cache
 
-  install-browsers:
-    description: "Install firefox browser"
-    steps:
-      - browser-tools/install-geckodriver
-      - browser-tools/install-firefox
-
   run-automation-tests:
     description: "Run automation tests"
     steps:
       - run:
-          name: Run automation tests on Chrome
+          name: Run automation tests on Chromium
           command: npx playwright test --project=chromium
       - run:
-          name: Run Playwright tests on Firefox
+          name: Run automation tests on Firefox
           command: npx playwright test --project=firefox
       - store_artifacts:
           path: test-results
           destination: test-results
       - store_test_results:
           path: test-results
-
 
 jobs:
   automation-tests-run:
@@ -66,16 +56,15 @@ jobs:
     parallelism: 2
     steps:
       - restore-and-save-cache
-      - install-browsers
 
-      # ✅ ВАЖНО: Экспорт Slack Webhook URL в окружение job
+      # Slack
       - run:
           name: Export Slack Webhook URL
           command: |
             echo 'export SLACK_WEBHOOK_URL=$SLACK_WEBHOOK_URL' >> $BASH_ENV
 
+      # Запуск тестов
       - run-automation-tests
-
 
 workflows:
   commit-workflow:
