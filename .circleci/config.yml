@@ -38,12 +38,17 @@ commands:
       - store_artifacts:
           path: playwright-report
           destination: playwright-report
-      # Сохраняем JUnit-результаты
+      # Сохраняем JUnit результаты
       - store_artifacts:
           path: test-results
           destination: test-results
       - store_test_results:
           path: test-results
+      # Формируем рабочую ссылку на HTML-отчёт
+      - run:
+          name: Set HTML report URL
+          command: |
+            echo "export HTML_REPORT_URL=https://output.circle-artifacts.com/output/$CIRCLE_WORKFLOW_JOB_ID/artifacts/0/playwright-report/index.html" >> $BASH_ENV
 
 jobs:
   automation-tests-run:
@@ -53,12 +58,12 @@ jobs:
     steps:
       - restore-and-save-cache
 
-      # Slack
+      # Экспорт Slack Webhook
       - run:
           name: Export Slack Webhook URL
           command: echo 'export SLACK_WEBHOOK_URL=$SLACK_WEBHOOK_URL' >> $BASH_ENV
 
-      # Запуск тестов
+      # Запуск тестов и сохранение артефактов
       - run-automation-tests
 
   build-approval:

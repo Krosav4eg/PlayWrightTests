@@ -1,9 +1,19 @@
+// global-teardown.js
 import { sendSlackMessage } from './slack.js';
 
 export default async function globalTeardown() {
-    const reportUrl = process.env.CIRCLE_BUILD_NUM
-        ? `https://app.circleci.com/pipelines/${process.env.CIRCLE_PROJECT_USERNAME}/${process.env.CIRCLE_PROJECT_REPONAME}/${process.env.CIRCLE_BUILD_NUM}/artifacts/0/playwright-report/index.html`
-        : 'HTML report not available';
+    try {
+        // Используем прямую ссылку на HTML-отчёт из CircleCI
+        const reportUrl = process.env.HTML_REPORT_URL || 'HTML report not available';
 
-    await sendSlackMessage(`Tests finished! 🎉\nHTML report: ${reportUrl}`);
+        // Формируем сообщение для Slack
+        const message = `✅ Tests finished! 🎉\nHTML report: ${reportUrl}`;
+
+        // Отправляем в Slack
+        await sendSlackMessage(message);
+
+        console.log('Slack notification sent successfully.');
+    } catch (error) {
+        console.error('Error sending Slack notification:', error);
+    }
 }
