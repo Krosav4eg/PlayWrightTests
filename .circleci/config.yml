@@ -39,7 +39,6 @@ commands:
       - browser-tools/install-geckodriver
       - browser-tools/install-firefox
 
-
   run-automation-tests:
     description: "Run automation tests"
     steps:
@@ -68,6 +67,13 @@ jobs:
     steps:
       - restore-and-save-cache
       - install-browsers
+
+      # ✅ ВАЖНО: Экспорт Slack Webhook URL в окружение job
+      - run:
+          name: Export Slack Webhook URL
+          command: |
+            echo 'export SLACK_WEBHOOK_URL=$SLACK_WEBHOOK_URL' >> $BASH_ENV
+
       - run-automation-tests
 
 
@@ -77,9 +83,8 @@ workflows:
       - automation-tests-run:
           filters:
             branches:
-               only:
+              only:
                 - master
-
 
   schedule-workflow:
     triggers:
@@ -92,10 +97,9 @@ workflows:
     jobs:
       - automation-tests-run
 
-
   on-demand:
     when: << pipeline.parameters.ApiTrigger >>
     jobs:
       - build_approval:
-            type: approval
+          type: approval
       - automation-tests-run

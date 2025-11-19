@@ -1,4 +1,5 @@
-const {defineConfig, devices} = require('@playwright/test');
+const { defineConfig, devices } = require('@playwright/test');
+const globalTeardown = require('./global-teardown.js');
 
 module.exports = defineConfig({
     testDir: './tests',
@@ -23,12 +24,15 @@ module.exports = defineConfig({
         },
         {
             name: 'firefox',
-            use: {...devices['Desktop Firefox']},
+            use: { ...devices['Desktop Firefox'] },
         },
     ],
+
     reporter: [
         ['list'],
         ['html'],
-        ['junit', {outputFile: 'test-results/results.xml'}],
+        ['junit', { outputFile: 'test-results/results.xml' }],
     ],
+
+    globalTeardown: globalTeardown,
 });

@@ -1,0 +1,5 @@
+import { sendSlackMessage } from "./slack.js";
+
+export default async function globalTeardown() {
+    await sendSlackMessage("Playwright: тесты завершены 🟢");
+}
