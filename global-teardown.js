@@ -3,10 +3,12 @@ import { sendSlackMessage } from './slack.js';
 
 export default async function globalTeardown() {
     try {
-        // Используем прямую ссылку на HTML-отчёт из CircleCI
-        const reportUrl = process.env.HTML_REPORT_URL || 'HTML report not available';
+        // Формируем прямую ссылку на HTML-отчёт CircleCI
+        const reportUrl = process.env.CIRCLE_WORKFLOW_JOB_ID
+            ? `https://output.circle-artifacts.com/output/${process.env.CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/playwright-report/index.html`
+            : 'HTML report not available';
 
-        // Формируем сообщение для Slack
+        // Сообщение для Slack
         const message = `✅ Tests finished! 🎉\nHTML report: ${reportUrl}`;
 
         // Отправляем в Slack
