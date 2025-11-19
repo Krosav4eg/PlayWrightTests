@@ -4,7 +4,7 @@ const config = {
         username: 'qa-test-5',
         password: 'qt5',
     },
-    baseUrl: 'https://jamesroberts-trial.interactgo.com/'
+    baseUrl: 'https://jamesroberts-trial.interactgo.com/1'
 };
 
 export default config;
