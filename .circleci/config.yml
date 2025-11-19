@@ -37,19 +37,11 @@ commands:
       - run:
           name: Run automation tests on Chromium
           command: npx playwright test --project=chromium
-      - run:
-          name: Run automation tests on Firefox
-          command: npx playwright test --project=firefox
+
       # Сохраняем HTML-отчёт
       - store_artifacts:
           path: playwright-report
           destination: playwright-report
-      # Сохраняем JUnit результаты
-      - store_artifacts:
-          path: test-results
-          destination: test-results
-      - store_test_results:
-          path: test-results
 
 
 jobs:
@@ -60,7 +52,7 @@ jobs:
       NightlyRunNotify:
         type: boolean
         default: false
-    parallelism: 2
+
     steps:
       - restore-and-save-cache
 

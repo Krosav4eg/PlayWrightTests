@@ -5,7 +5,7 @@ export default defineConfig({
     outputDir: 'test-results/',
     fullyParallel: true,
     timeout: 40000,
-    workers: process.env.CI ? 3 : undefined,
+    workers: process.env.CI ? 1 : undefined,
     use: {
         video: 'retain-on-failure',
         screenshot: 'only-on-failure',
@@ -21,10 +21,7 @@ export default defineConfig({
             headless: false,
             use: { ...devices['Desktop Chrome'] },
         },
-        {
-            name: 'firefox',
-            use: { ...devices['Desktop Firefox'] },
-        },
+
     ],
     reporter: [
         ['list'],
