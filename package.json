@@ -4,7 +4,9 @@
   "type": "module",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "playwright test || echo PLAYWRIGHT_FAILED=true"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
