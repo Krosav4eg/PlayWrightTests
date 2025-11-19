@@ -10,7 +10,7 @@ executors:
     environment:
       TERM: xterm
     docker:
-      - image: mcr.microsoft.com/playwright:v1.46.0-focal  # Playwright image с предустановленными браузерами
+      - image: mcr.microsoft.com/playwright:v1.44.1-focal  # Playwright image с предустановленными браузерами
 
 commands:
 
