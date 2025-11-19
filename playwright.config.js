@@ -4,7 +4,7 @@ export default defineConfig({
     testDir: './tests',
     outputDir: 'test-results/',
     fullyParallel: true,
-    timeout: 40000,
+    timeout: 10000,
     workers: process.env.CI ? 1 : undefined,
     use: {
         video: 'retain-on-failure',
