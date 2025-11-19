@@ -1,33 +1,23 @@
 // global-teardown.js
 import { sendSlackMessage } from './slack.js';
-import fs from 'fs';
 
 export default async function globalTeardown() {
     try {
-        // --------------------------------------------------
-        // Определяем был ли fail через JUnit XML
-        // --------------------------------------------------
-        const resultsPath = 'test-results/results.xml';
-        let failed = false;
+        const username = process.env.CIRCLE_PROJECT_USERNAME || 'unknown-user';
+        const repo = process.env.CIRCLE_PROJECT_REPONAME || 'unknown-repo';
 
-        if (fs.existsSync(resultsPath)) {
-            const xml = fs.readFileSync(resultsPath, 'utf8');
-            failed = xml.includes('<failure') || xml.includes('<error');
-        }
+        // Используем pipeline number, если доступен, иначе fallback на job number
+        const buildUrl = process.env.CIRCLE_PIPELINE_NUMBER
+            ? `https://app.circleci.com/pipelines/github/${username}/${repo}/${process.env.CIRCLE_PIPELINE_NUMBER}`
+            : process.env.CIRCLE_BUILD_NUM
+                ? `https://app.circleci.com/pipelines/github/${username}/${repo}/jobs/${process.env.CIRCLE_BUILD_NUM}`
+                : 'Build URL not available';
 
-        // --------------------------------------------------
-        // Формируем ссылку на BUILD (нужная ссылка!)
-        // --------------------------------------------------
-        const buildUrl = `https://app.circleci.com/pipelines/github/${process.env.CIRCLE_PROJECT_USERNAME}/${process.env.CIRCLE_PROJECT_REPONAME}/${process.env.CIRCLE_BUILD_NUM}`;
-
-        const icon = failed ? '❌' : '✅';
-        const text = failed ? 'Tests FAILED!' : 'Tests finished successfully! 🎉';
-
-        const message = `${icon} ${text}\nBuild: ${buildUrl}`;
+        const message = `✅ Tests finished! 🎉\nCircleCI Job: ${buildUrl}`;
 
         await sendSlackMessage(message);
-
+        console.log('Slack notification sent successfully.');
     } catch (error) {
-        console.error("❌ Error in global teardown:", error);
+        console.error('Error sending Slack notification:', error);
     }
 }
