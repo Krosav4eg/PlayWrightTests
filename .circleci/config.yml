@@ -12,7 +12,7 @@ executors:
     environment:
       TERM: xterm
     docker:
-      - image: circleci/node:16-browsers
+      - image: mcr.microsoft.com/playwright:v1.46.0-focal
 
 commands:
 
