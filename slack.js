@@ -1,5 +1,4 @@
-import fetch from "node-fetch";
-
+// slack.js
 export async function sendSlackMessage(message) {
     const url = process.env.SLACK_WEBHOOK_URL;
 
@@ -11,8 +10,6 @@ export async function sendSlackMessage(message) {
     await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            text: message
-        })
+        body: JSON.stringify({ text: message })
     });
 }
