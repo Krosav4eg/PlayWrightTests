@@ -1,30 +1,33 @@
 // global-teardown.js
 import { sendSlackMessage } from './slack.js';
+import fs from 'fs';
 
 export default async function globalTeardown() {
     try {
-        const username = process.env.CIRCLE_PROJECT_USERNAME || 'unknown-user';
-        const repo = process.env.CIRCLE_PROJECT_REPONAME || 'unknown-repo';
+        // --------------------------------------------------
+        // Определяем был ли fail через JUnit XML
+        // --------------------------------------------------
+        const resultsPath = 'test-results/results.xml';
+        let failed = false;
 
-        // Формируем URL пайплайна или job (fallback)
-        const buildUrl = process.env.CIRCLE_PIPELINE_NUMBER
-            ? `https://app.circleci.com/pipelines/github/${username}/${repo}/${process.env.CIRCLE_PIPELINE_NUMBER}`
-            : process.env.CIRCLE_BUILD_NUM
-                ? `https://app.circleci.com/pipelines/github/${username}/${repo}/jobs/${process.env.CIRCLE_BUILD_NUM}`
-                : 'Build URL not available';
+        if (fs.existsSync(resultsPath)) {
+            const xml = fs.readFileSync(resultsPath, 'utf8');
+            failed = xml.includes('<failure') || xml.includes('<error');
+        }
 
-        // Проверяем, упали ли тесты
-        const isFailed =
-            process.env.PLAYWRIGHT_FAILED === 'true' ||
-            process.env.PW_TEST_FAILED === '1';
+        // --------------------------------------------------
+        // Формируем ссылку на BUILD (нужная ссылка!)
+        // --------------------------------------------------
+        const buildUrl = `https://app.circleci.com/pipelines/github/${process.env.CIRCLE_PROJECT_USERNAME}/${process.env.CIRCLE_PROJECT_REPONAME}/${process.env.CIRCLE_BUILD_NUM}`;
 
-        const message = isFailed
-            ? `❌ *Tests FAILED!* 🔥\nPipeline/Job: ${buildUrl}`
-            : `✅ Tests finished successfully! 🎉\nPipeline/Job: ${buildUrl}`;
+        const icon = failed ? '❌' : '✅';
+        const text = failed ? 'Tests FAILED!' : 'Tests finished successfully! 🎉';
+
+        const message = `${icon} ${text}\nBuild: ${buildUrl}`;
 
         await sendSlackMessage(message);
-        console.log('Slack notification sent successfully.');
+
     } catch (error) {
-        console.error('Error sending Slack notification:', error);
+        console.error("❌ Error in global teardown:", error);
     }
 }
