@@ -1,16 +1,11 @@
 version: 2.1
 
-parameters:
-  ApiTrigger:
-    type: boolean
-    default: false
-
 executors:
   node-executor:
+    docker:
+      - image: mcr.microsoft.com/playwright:v1.44.1-focal
     environment:
       TERM: xterm
-    docker:
-      - image: mcr.microsoft.com/playwright:v1.44.1-focal  # Playwright image с предустановленными браузерами
 
 commands:
 
@@ -23,7 +18,7 @@ commands:
             - v2-deps-{{ .Branch }}-{{ checksum "package-lock.json" }}
             - v2-deps-{{ .Branch }}-
             - v2-deps-
-      - run: npm install --save-dev
+      - run: npm ci
       - save_cache:
           key: v2-deps-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
@@ -39,6 +34,11 @@ commands:
       - run:
           name: Run automation tests on Firefox
           command: npx playwright test --project=firefox
+      # Сохраняем HTML-отчёт
+      - store_artifacts:
+          path: playwright-report
+          destination: playwright-report
+      # Сохраняем JUnit-результаты
       - store_artifacts:
           path: test-results
           destination: test-results
@@ -49,10 +49,6 @@ jobs:
   automation-tests-run:
     working_directory: ~/repo
     executor: node-executor
-    parameters:
-      NightlyRunNotify:
-        type: boolean
-        default: false
     parallelism: 2
     steps:
       - restore-and-save-cache
@@ -60,8 +56,7 @@ jobs:
       # Slack
       - run:
           name: Export Slack Webhook URL
-          command: |
-            echo 'export SLACK_WEBHOOK_URL=$SLACK_WEBHOOK_URL' >> $BASH_ENV
+          command: echo 'export SLACK_WEBHOOK_URL=$SLACK_WEBHOOK_URL' >> $BASH_ENV
 
       # Запуск тестов
       - run-automation-tests
