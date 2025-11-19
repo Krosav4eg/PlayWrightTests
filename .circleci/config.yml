@@ -1,5 +1,10 @@
 version: 2.1
 
+parameters:
+  ApiTrigger:
+    type: boolean
+    default: false
+
 executors:
   node-executor:
     docker:
@@ -49,6 +54,10 @@ jobs:
   automation-tests-run:
     working_directory: ~/repo
     executor: node-executor
+    parameters:
+      NightlyRunNotify:
+        type: boolean
+        default: false
     parallelism: 2
     steps:
       - restore-and-save-cache
@@ -60,9 +69,6 @@ jobs:
 
       # Запуск тестов и сохранение артефактов
       - run-automation-tests
-
-  build-approval:
-    type: approval
 
 workflows:
   commit-workflow:
@@ -85,6 +91,8 @@ workflows:
       - automation-tests-run
 
   on-demand:
+    when: << pipeline.parameters.ApiTrigger >>
     jobs:
-      - build-approval
+      - build_approval:
+          type: approval
       - automation-tests-run
