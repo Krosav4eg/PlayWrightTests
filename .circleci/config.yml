@@ -38,8 +38,8 @@ commands:
           name: Run automation tests on Chromium
           command: npx playwright test --project=chromium
       - run:
-          name: Run automation tests on Chromium
-          command: npx playwright test --project=chromium
+          name: Run automation tests on Firefox
+          command: npx playwright test --project=firefox
 
       # Сохраняем HTML-отчёт
       - store_artifacts:
