@@ -29,6 +29,7 @@ export default defineConfig({
     reporter: [
         ['list'],
         ['html'],
+        ['./reporter.js']
         ['junit', { outputFile: 'test-results/results.xml' }],
     ],
 
