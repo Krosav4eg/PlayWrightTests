@@ -32,4 +32,6 @@ export default defineConfig({
         ['json', { outputFile: 'playwright-report/results.json' }],
         ['junit', { outputFile: 'test-results/results.xml' }],
     ],
+
+    globalTeardown: './global-teardown.js',
 });

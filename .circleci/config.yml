@@ -15,6 +15,7 @@ executors:
 commands:
 
   restore-and-save-cache:
+    description: "Restore and save cache"
     steps:
       - checkout
       - restore_cache:
@@ -31,41 +32,36 @@ commands:
             - ~/.cache
 
   run-automation-tests:
+    description: "Run automation tests"
     steps:
       - run:
           name: Run Playwright tests
           command: npx playwright test
+
+      # Сохраняем HTML-отчёт
       - store_artifacts:
           path: playwright-report
           destination: playwright-report
 
-  send-slack-message:
-    steps:
-      - run:
-          name: Send Slack notification
-          command: |
-            echo "Running Slack Teardown"
-            node ./global-teardown.js
-
 jobs:
-
   automation-tests-run:
     working_directory: ~/repo
     executor: node-executor
+    parameters:
+      NightlyRunNotify:
+        type: boolean
+        default: false
 
     steps:
       - restore-and-save-cache
 
+      # Экспорт Slack Webhook
       - run:
           name: Export Slack Webhook URL
           command: echo 'export SLACK_WEBHOOK_URL=$SLACK_WEBHOOK_URL' >> $BASH_ENV
 
+      # Запуск тестов и сохранение артефактов
       - run-automation-tests
-
-      # ТЕПЕРЬ teardown выполняется ТОЛЬКО ТУТ
-      - send-slack-message
-
-
 
 workflows:
   commit-workflow:
@@ -75,6 +71,7 @@ workflows:
             branches:
               only:
                 - master
+
 
   schedule-workflow:
     triggers:
@@ -86,6 +83,7 @@ workflows:
                 - master
     jobs:
       - automation-tests-run
+
 
   on-demand:
     when: << pipeline.parameters.ApiTrigger >>
