@@ -1,10 +1,6 @@
 // slack.js
 import fetch from 'node-fetch';
 
-/**
- * Отправляет сообщение в Slack через Incoming Webhook
- * @param {string} message - Текст сообщения
- */
 export async function sendSlackMessage(message) {
     const url = process.env.SLACK_WEBHOOK_URL;
 

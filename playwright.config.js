@@ -28,10 +28,9 @@ export default defineConfig({
     ],
     reporter: [
         ['list'],
-        ['html'],
+        ['html',{ outputFolder: 'playwright-report', open: 'never' }],
         ['junit', { outputFile: 'test-results/results.xml' }],
     ],
 
-    // ✅ путь к файлу, а не импорт функции
     globalTeardown: './global-teardown.js',
 });
