@@ -31,20 +31,20 @@ export default async function globalTeardown() {
         // CircleCI env
         const username = process.env.CIRCLE_PROJECT_USERNAME;
         const repo = process.env.CIRCLE_PROJECT_REPONAME;
+        const pipeline = process.env.CIRCLE_PIPELINE_NUMBER;
+        const workflow = process.env.CIRCLE_WORKFLOW_ID;
+        const job = process.env.CIRCLE_BUILD_NUM;
 
-        const pipelineNumber = process.env.CIRCLE_PIPELINE_NUMBER;
-        const workflowId = process.env.CIRCLE_WORKFLOW_ID;
-        const jobNumber = process.env.CIRCLE_BUILD_NUM;
-
-        const didFail = process.env.TEST_STATUS === 'failed';
+        const fullUrl =
+            `https://app.circleci.com/pipelines/github/${username}/${repo}/${pipeline}/workflows/${workflow}/jobs/${job}`;
 
         const message = failed
             ? `❌ *Tests failed!*\n${fullUrl}`
             : `✅ Tests finished successfully! 🎉\n${fullUrl}`;
 
         await sendSlackMessage(message);
-        console.log("Slack message sent:", message);
+
     } catch (error) {
-        console.error("Error in globalTeardown:", error);
+        console.error("Slack error:", error);
     }
 }

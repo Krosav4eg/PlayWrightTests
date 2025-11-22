@@ -32,7 +32,6 @@ commands:
             - ~/.cache
 
   run-automation-tests:
-    description: "Run automation tests"
     steps:
       - run:
           name: Run Playwright tests
@@ -55,12 +54,11 @@ jobs:
     steps:
       - restore-and-save-cache
 
-      # Экспорт Slack Webhook
+      # Export Slack Webhook
       - run:
           name: Export Slack Webhook URL
           command: echo 'export SLACK_WEBHOOK_URL=$SLACK_WEBHOOK_URL' >> $BASH_ENV
 
-      # Запуск тестов и сохранение артефактов
       - run-automation-tests
 
 workflows:
@@ -72,7 +70,6 @@ workflows:
               only:
                 - master
 
-
   schedule-workflow:
     triggers:
       - schedule:
@@ -83,7 +80,6 @@ workflows:
                 - master
     jobs:
       - automation-tests-run
-
 
   on-demand:
     when: << pipeline.parameters.ApiTrigger >>
