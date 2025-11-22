@@ -15,7 +15,6 @@ executors:
 commands:
 
   restore-and-save-cache:
-    description: "Restore and save cache"
     steps:
       - checkout
       - restore_cache:
@@ -32,47 +31,41 @@ commands:
             - ~/.cache
 
   run-automation-tests:
-    description: "Run automation tests"
     steps:
       - run:
-          name: Run all automation tests on Chromium and Firefox
-          command: |
-            # Run tests but do NOT fail the job
-            npx playwright test || true
-
-            # Save exit status
-            echo "PW_EXIT_CODE=$?" >> $BASH_ENV
-
-      # Save HTML report
+          name: Run Playwright tests
+          command: npx playwright test
       - store_artifacts:
           path: playwright-report
           destination: playwright-report
 
-      # Run global teardown manually
+  send-slack-message:
+    steps:
       - run:
-          name: Run Playwright global teardown (Slack)
+          name: Send Slack notification
           command: |
-                node ./global-teardown.js
-
+            echo "Running Slack Teardown"
+            node ./global-teardown.js
 
 jobs:
+
   automation-tests-run:
     working_directory: ~/repo
     executor: node-executor
-    parameters:
-      NightlyRunNotify:
-        type: boolean
-        default: false
 
     steps:
       - restore-and-save-cache
 
-      # Export Slack Webhook
       - run:
           name: Export Slack Webhook URL
           command: echo 'export SLACK_WEBHOOK_URL=$SLACK_WEBHOOK_URL' >> $BASH_ENV
 
       - run-automation-tests
+
+      # ТЕПЕРЬ teardown выполняется ТОЛЬКО ТУТ
+      - send-slack-message
+
+
 
 workflows:
   commit-workflow:
