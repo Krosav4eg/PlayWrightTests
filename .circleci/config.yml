@@ -52,9 +52,10 @@ commands:
       - run:
           name: Run Playwright global teardown (Slack)
           command: |
+            #!/bin/bash -eo pipefail
             echo "Exit code: $PW_EXIT_CODE"
             export PW_TEST_EXIT_CODE=$PW_EXIT_CODE
-            node ./playwright/global-teardown.js
+            node ./global-teardown.js
 
 jobs:
   automation-tests-run:
