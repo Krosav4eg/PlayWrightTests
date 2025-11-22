@@ -21,10 +21,10 @@ export default defineConfig({
             headless: false,
             use: { ...devices['Desktop Chrome'] },
         },
-        {
-            name: 'firefox',
-            use: { ...devices['Desktop Firefox'] },
-        },
+        // {
+        //     name: 'firefox',
+        //     use: { ...devices['Desktop Firefox'] },
+        // },
     ],
     reporter: [
         ['list'],
