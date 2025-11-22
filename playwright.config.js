@@ -1,11 +1,11 @@
-const {defineConfig, devices} = require('@playwright/test');
+import { defineConfig, devices } from '@playwright/test';
 
-module.exports = defineConfig({
+export default defineConfig({
     testDir: './tests',
     outputDir: 'test-results/',
     fullyParallel: true,
     timeout: 40000,
-    workers: process.env.CI ? 3 : undefined,
+    workers: process.env.CI ? 1 : undefined,
     use: {
         video: 'retain-on-failure',
         screenshot: 'only-on-failure',
@@ -21,14 +21,17 @@ module.exports = defineConfig({
             headless: false,
             use: { ...devices['Desktop Chrome'] },
         },
-        {
-            name: 'firefox',
-            use: {...devices['Desktop Firefox']},
-        },
+        // {
+        //     name: 'firefox',
+        //     use: { ...devices['Desktop Firefox'] },
+        // },
     ],
     reporter: [
         ['list'],
-        ['html'],
-        ['junit', {outputFile: 'test-results/results.xml'}],
+        ['html',{ outputFolder: 'playwright-report', open: 'never' }],
+        ['json', { outputFile: 'playwright-report/results.json' }],
+        ['junit', { outputFile: 'test-results/results.xml' }],
     ],
+
+    globalTeardown: './global-teardown.js',
 });

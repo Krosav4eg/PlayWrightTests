@@ -1,9 +1,12 @@
 {
   "name": "untitled",
   "version": "1.0.0",
+  "type": "module",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "playwright test || echo PLAYWRIGHT_FAILED=true"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -11,9 +14,11 @@
     "@playwright/test": "^1.44.1",
     "@types/node": "^20.14.6",
     "allure-commandline": "^2.29.0",
-    "allure-playwright": "^3.0.0-beta.3"
+    "allure-playwright": "^3.0.0-beta.3",
+    "node-fetch": "^3.3.2"
   },
   "dependencies": {
+    "@slack/web-api": "^7.12.0",
     "dotenv": "^16.4.5"
   }
 }

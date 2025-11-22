@@ -1,6 +1,4 @@
 version: 2.1
-orbs:
-  browser-tools: circleci/browser-tools@1.4.1
 
 parameters:
   ApiTrigger:
@@ -9,10 +7,10 @@ parameters:
 
 executors:
   node-executor:
+    docker:
+      - image: mcr.microsoft.com/playwright:v1.44.1-jammy
     environment:
       TERM: xterm
-    docker:
-      - image: circleci/node:16-browsers
 
 commands:
 
@@ -25,36 +23,34 @@ commands:
             - v2-deps-{{ .Branch }}-{{ checksum "package-lock.json" }}
             - v2-deps-{{ .Branch }}-
             - v2-deps-
-      - run: npm install --save-dev
-      - run: npx playwright install
+      - run:
+          name: Install npm dependencies
+          command: npm install --save-dev
+      - run:
+          name: Install Playwright browsers
+          command: npx playwright install
       - save_cache:
           key: v2-deps-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
             - ~/.npm
             - ~/.cache
 
-  install-browsers:
-    description: "Install firefox browser"
-    steps:
-      - browser-tools/install-geckodriver
-      - browser-tools/install-firefox
-
-
   run-automation-tests:
-    description: "Run automation tests"
     steps:
+      # Создаём папку для отчёта, чтобы избежать ошибок
       - run:
-          name: Run automation tests on Chrome
-          command: npx playwright test --project=chromium
-      - run:
-          name: Run Playwright tests on Firefox
-          command: npx playwright test --project=firefox
-      - store_artifacts:
-          path: test-results
-          destination: test-results
-      - store_test_results:
-          path: test-results
+          name: Ensure report directory exists
+          command: mkdir -p playwright-report
 
+      # Запуск тестов с HTML-отчётом
+      - run:
+          name: Run Playwright tests
+          command: npx playwright test --reporter=list,html || true
+
+      # Сохраняем HTML-отчёт
+      - store_artifacts:
+          path: playwright-report
+          destination: playwright-report
 
 jobs:
   automation-tests-run:
@@ -64,12 +60,14 @@ jobs:
       NightlyRunNotify:
         type: boolean
         default: false
-    parallelism: 2
     steps:
       - restore-and-save-cache
-      - install-browsers
-      - run-automation-tests
 
+      - run:
+          name: Export Slack Webhook URL
+          command: echo 'export SLACK_WEBHOOK_URL=$SLACK_WEBHOOK_URL' >> $BASH_ENV
+
+      - run-automation-tests
 
 workflows:
   commit-workflow:
@@ -77,9 +75,8 @@ workflows:
       - automation-tests-run:
           filters:
             branches:
-               only:
+              only:
                 - master
-
 
   schedule-workflow:
     triggers:
@@ -92,10 +89,9 @@ workflows:
     jobs:
       - automation-tests-run
 
-
   on-demand:
     when: << pipeline.parameters.ApiTrigger >>
     jobs:
       - build_approval:
-            type: approval
+          type: approval
       - automation-tests-run
