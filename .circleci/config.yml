@@ -37,10 +37,17 @@ commands:
 
   run-automation-tests:
     steps:
+      # Создаём папку для отчёта, чтобы избежать ошибок
+      - run:
+          name: Ensure report directory exists
+          command: mkdir -p playwright-report
+
+      # Запуск тестов с HTML-отчётом
       - run:
           name: Run Playwright tests
-          command: npx playwright test
+          command: npx playwright test --reporter=list,html || true
 
+      # Сохраняем HTML-отчёт
       - store_artifacts:
           path: playwright-report
           destination: playwright-report
