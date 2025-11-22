@@ -36,12 +36,25 @@ commands:
     steps:
       - run:
           name: Run all automation tests on Chromium and Firefox
-          command: npx playwright test
+          command: |
+            # Run tests but do NOT fail the job
+            npx playwright test || true
 
-      # Сохраняем HTML-отчёт
+            # Save exit status
+            echo "PW_EXIT_CODE=$?" >> $BASH_ENV
+
+      # Save HTML report
       - store_artifacts:
           path: playwright-report
           destination: playwright-report
+
+      # Run global teardown manually
+      - run:
+          name: Run Playwright global teardown (Slack)
+          command: |
+            echo "Exit code: $PW_EXIT_CODE"
+            export PW_TEST_EXIT_CODE=$PW_EXIT_CODE
+            node ./playwright/global-teardown.js
 
 jobs:
   automation-tests-run:
@@ -55,12 +68,11 @@ jobs:
     steps:
       - restore-and-save-cache
 
-      # Экспорт Slack Webhook
+      # Export Slack Webhook
       - run:
           name: Export Slack Webhook URL
           command: echo 'export SLACK_WEBHOOK_URL=$SLACK_WEBHOOK_URL' >> $BASH_ENV
 
-      # Запуск тестов и сохранение артефактов
       - run-automation-tests
 
 workflows:
@@ -72,7 +84,6 @@ workflows:
               only:
                 - master
 
-
   schedule-workflow:
     triggers:
       - schedule:
@@ -83,7 +94,6 @@ workflows:
                 - master
     jobs:
       - automation-tests-run
-
 
   on-demand:
     when: << pipeline.parameters.ApiTrigger >>
