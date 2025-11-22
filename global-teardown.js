@@ -1,4 +1,3 @@
-// global-teardown.js
 import fs from 'fs';
 import path from 'path';
 import { sendSlackMessage } from './slack.js';
@@ -12,19 +11,20 @@ export default async function globalTeardown() {
         if (fs.existsSync(reportPath)) {
             const results = JSON.parse(fs.readFileSync(reportPath, 'utf-8'));
 
-            // Если общий статус failed
-            if (results.status === 'failed') {
+            // проверяем, есть ли хотя бы один упавший тест
+            const hasFailed = results.suites?.some(suite =>
+                suite.specs?.some(spec =>
+                    spec.tests?.some(test =>
+                        test.results?.some(r => r.status === 'failed')
+                    )
+                )
+            );
+
+            if (hasFailed) {
                 failed = true;
             }
-
-            // Если какой-то тест failed
-            if (Array.isArray(results.tests)) {
-                if (results.tests.some(t => t.status === 'failed')) {
-                    failed = true;
-                }
-            }
         } else {
-            // Если Playwright не создал отчёт — считаем что падение
+            // если отчёта нет — считаем что упало
             failed = true;
         }
 
@@ -39,8 +39,8 @@ export default async function globalTeardown() {
             `https://app.circleci.com/pipelines/github/${username}/${repo}/${pipeline}/workflows/${workflow}/jobs/${job}`;
 
         const message = failed
-            ? `❌ *Tests failed!*\n${fullUrl}`
-            : `✅ Tests finished successfully! 🎉\n${fullUrl}`;
+            ? `❌ *Tests FAILED!*\n${fullUrl}`
+            : `✅ *All tests PASSED!* 🎉\n${fullUrl}`;
 
         await sendSlackMessage(message);
 
